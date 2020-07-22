@@ -1,0 +1,73 @@
+---
+title: "COViD by the Numbers"
+author: "Robert Z. Selden, Jr."
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+bibliography: covid.bib
+fig_caption: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Because making informed decisions matters
+
+Those data used on this page were harvested from the [Texas Department of State Health Services](https://www.dshs.state.tx.us/coronavirus/additionaldata.aspx) daily, and visualizations were modeled in R. This exercise was generated as a means for me to better understand the data, and the risk that COVID poses to my family. Knowledge is power in this situation, and---when the mortality of those that I love is at risk---I would like to be as well-informed and knowledgeable as possible. 
+
+The text and visualizations listed below were built for my personal use only. I am working through automating this analysis code, and it will change as I progress in that effort. Will also include links and references to Texas-specific resources and case studies as I come across them.
+
+### Daily cases in Texas
+
+```{r totaltexascases, out.width = "100%", dpi = 600, echo=TRUE}
+# load libraries
+library(tidyverse)
+
+# set working directory
+setwd(getwd())
+
+# load data
+data <- read.csv("dailycases.csv")
+
+# define variables
+# reformat date column to meet with ISO 8601 (yyyy-mm-dd)
+date <- as.Date(data$date,"%m/%d/%y")
+# daily cases 
+dailyc <- data$dailycases
+# daily fatalities
+dailyf <- data$dailyfatalities
+
+# barplot of daily cases
+p <- ggplot(data, aes(x=date, y=dailyc)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "March 26 - July 21, 2020", y = "Daily Cases in Texas") 
+p
+```
+
+### Cumulative cases in Nacogdoches County
+
+Cumulative numbers differ from the daily numbers reported to the State of Texas. I have not yet been able to find a dataset that includes the daily numbers for Nacogdoches County, but will continue looking.
+
+```{r countycases, out.width = "100%", dpi = 600, echo=TRUE}
+# data wrangling
+# transpose data and extract the last five characters from the date column
+
+# load data
+data2 <- read.csv("dailycounty2.csv")
+
+# define variables
+# reformat date column to meet with ISO 8601 (yyyy-mm-dd)
+date <- as.Date(data2$date,"%m/%d/%y")
+# cumulative cases for Nacogdoches County
+dailyc <- data2$cumulative
+
+# barplot of daily cases
+p <- ggplot(data2, aes(x=date, y=dailyc)) +
+  geom_bar(stat = "identity", fill = "blue") +
+  theme(axis.text.x = element_blank()) +
+  labs(x = "March 25 - July 21, 2020", y = "Cumulative Cases in Nacgodoches County")
+p
+# end of code
+```
+
